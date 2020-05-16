@@ -1,0 +1,29 @@
+{
+    "require": {
+        "php": "^7.3",
+        "yiisoft/yii2": "~2.0.30",
+        "joshtronic/php-loremipsum": "^1.0.2",
+        "guzzlehttp/guzzle": "~6.0",
+        "ext-mbstring": "*",
+        "ext-readline": "*",
+        "ext-pcntl": "*"
+    },
+    "require-dev": {
+        "ext-blackfire": "*",
+        "yiisoft/yii2-debug": "~2.0.0",
+        "phpunit/phpunit": "^9.0",
+        "blackfire/php-sdk": "^1.22"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": "src",
+            "app\\tests\\": "tests"
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
+}

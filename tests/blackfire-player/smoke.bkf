@@ -1,0 +1,16 @@
+name "A basic SMOKE test"
+
+endpoint "http://localhost:8080/"
+
+scenario
+    name "Fast check"
+    blackfire true
+    samples 1
+
+    visit url('/')
+        expect status_code() == 200
+        assert main.wall_time < 200ms
+
+    click link("Generate articles")
+        expect status_code() == 200
+        assert main.wall_time < 500ms
