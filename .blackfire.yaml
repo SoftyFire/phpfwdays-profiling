@@ -1,0 +1,13 @@
+metrics:
+  capture:
+    label: Test arguments capture
+    matching_calls:
+      php:
+        -
+          callee:
+            selector: "=app\\controllers\\SiteController::foo"
+            argument:
+              # Using "*" as a "catch-all" selector generates
+              # a different node per argument
+              1: "*"
+              2: "*"

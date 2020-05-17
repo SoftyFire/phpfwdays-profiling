@@ -7,6 +7,8 @@ use app\services\ArticlesGenerator;
 use app\services\NewsApiClient;
 use app\services\RemoteArticlesProviderInterface;
 use app\services\StatsGenerator;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use yii\base\Module;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
@@ -83,6 +85,19 @@ class SiteController extends Controller
     public function actionTrends(): string
     {
         return $this->render('trends');
+    }
+
+    public function actionCaptureArguments()
+    {
+        for ($i = 0; $i < 10; $i++) {
+            $this->foo($i, random_int(1, 30));
+        }
+    }
+
+    protected function foo(int $arg1, int $arg2): void
+    {
+        usleep($arg1 * 1e3);
+        echo $arg1 . PHP_EOL;
     }
 
     public function actionImportTrendArticles(): string
