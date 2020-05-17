@@ -3,6 +3,9 @@
 namespace app\console;
 
 use app\services\StatsGenerator;
+use Blackfire\Client;
+use Blackfire\ClientConfiguration;
+use Blackfire\Profile\Configuration;
 use Yii;
 use yii\base\Module;
 use yii\console\Controller;
@@ -45,12 +48,28 @@ class DaemonController extends Controller
             file_put_contents($taskFile, '');
             echo ' [NEW] Consumed task at ', date(DATE_ATOM), PHP_EOL;
 
-            $this->handler();
+            $this->profile(
+                \Closure::fromCallable([$this, 'handler'])
+            );
 
             echo PHP_EOL, ' [OK] Task done', PHP_EOL, PHP_EOL;
         }
 
         echo ' [x_x] Consumed max messages per daemon. Shutting down.';
+    }
+
+    private function profile(\Closure $closure)
+    {
+        $blackfire = new Client();
+
+        $config = new Configuration();
+        $config->setTitle('Daemon run @ ' . (new \DateTime())->format(DATE_ATOM));
+        $config->assert('main.wall_time < 1s', 'Execution time is not too fat');
+
+        $probe = $blackfire->createProbe($config);
+            $closure();
+        $profile = $blackfire->endProbe($probe);
+        echo ' 🌟 Profile done: ' . $profile->getUrl() . "\n";
     }
 
     private function handler(): void
