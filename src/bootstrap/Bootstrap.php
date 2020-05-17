@@ -2,6 +2,8 @@
 
 namespace app\bootstrap;
 
+use Blackfire\Client;
+use Blackfire\Profile\Configuration;
 use yii\base\Application;
 use yii\base\BootstrapInterface;
 
@@ -14,6 +16,19 @@ class Bootstrap implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-//        usleep(mt_rand(5e5, 2e6)); // Surprise :)
+        if (true) {
+            return;
+        }
+
+        $blackfire = new Client();
+
+        $config = new Configuration();
+        $config->assert('main.wall_time < 1s', 'Execution time is not too fat');
+
+        $probe = $blackfire->createProbe($config);
+
+        register_shutdown_function(function() use ($blackfire, $probe) {
+            $blackfire->endProbe($probe);
+        });
     }
 }
