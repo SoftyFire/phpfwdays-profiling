@@ -22,7 +22,8 @@ class ArticlesGeneratorTest extends TestCase
      * @var ArticlesGenerator
      */
     protected $generator;
-    public function setUp()
+
+    public function setUp(): void
     {
         $this->generator = new ArticlesGenerator(new LoremIpsum());
     }
@@ -33,14 +34,21 @@ class ArticlesGeneratorTest extends TestCase
         // define some assertions
         $config
             ->defineMetric(new Metric('tags.search', '=app\models\Tag::find'))
-            ->assert('metrics.sql.queries.count < 20', 'SQL queries count')
-            ->assert('metrics.tags.search.count < 10', 'Tags search count')
+            ->defineMetric(new Metric('tags.ensure_tag', '=' . ArticlesGenerator::class . '::ensureTag'))
+//            ->assert('metrics.sql.queries.count < 20', 'SQL queries count')
+            ->assert('metrics.tags.search.count < 20', 'Tags search count')
+            ->assert('metrics.tags.search.count < metrics.tags.ensure_tag.count', 'Tag cache hits test')
+            ->assert('metrics.http.curl.requests.count == 0', 'No network requests involved in articles generation')
             // ...
         ;
 
         $profile = $this->assertBlackfire($config, function () {
-            $articles = $this->generator->generate(1);
+            $count = 12;
+            $articles = $this->generator->generate($count);
             $this->assertContainsOnlyInstancesOf(Article::class, $articles);
+            $this->assertTrue(count($articles) > 0, 'At least one article was generated');
+            $this->assertCount($count, $articles, 'We\'ve got exactly the requested articles count');
+
             $article = $articles[0];
             $this->assertNotEmpty($article->title);
             $this->assertNotEmpty($article->text);

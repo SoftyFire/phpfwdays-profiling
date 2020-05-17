@@ -28,6 +28,27 @@ $config = [
             ],
         ],
     ],
+    'container' => [
+        'singletons' => [
+            \app\services\RemoteArticlesProviderInterface::class => function () {
+                $params = Yii::$app->params;
+
+                return new \app\services\NewsApiClient(
+                    new \GuzzleHttp\Client([
+                        'base_uri' => 'https://newsapi.org/v2/',
+                        'headers' => [
+                            'Accept' => 'application/json',
+                        ],
+                        'defaults' => [
+                            'timeout'         => 2,
+                            'allow_redirects' => false,
+                        ],
+                    ]),
+                    $params['newsApiToken'] ?? null
+                );
+            },
+        ]
+    ],
     'params' => $params,
     'controllerMap' => [
         'migrate' => [
