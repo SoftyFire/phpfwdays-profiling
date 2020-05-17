@@ -14,6 +14,6 @@ class Bootstrap implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        usleep(mt_rand(5e5, 2e6)); // Surprise :)
+//        usleep(mt_rand(5e5, 2e6)); // Surprise :)
     }
 }
