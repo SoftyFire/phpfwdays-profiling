@@ -4,7 +4,6 @@ namespace app\controllers;
 
 use app\models\Article;
 use app\services\ArticlesGenerator;
-use app\services\NewsApiClient;
 use app\services\RemoteArticlesProviderInterface;
 use app\services\StatsGenerator;
 use GuzzleHttp\Client;
@@ -80,6 +79,28 @@ class SiteController extends Controller
         return $this->render('stats', [
             'stats' => $stats
         ]);
+    }
+
+    public function actionServiceCall()
+    {
+        usleep(5e4);
+
+        $probe = \BlackfireProbe::getMainInstance();
+        if (\BlackfireProbe::isEnabled()) {
+            $subQuery = $probe->createSubProfileQuery();
+        }
+
+        $client = new Client([
+            'base_uri' => 'http://localhost:8082',
+            'timeout' => 1,
+        ]);
+        $request = new Request('GET', 'index.php?r=site%2Fcapture-arguments', [
+            'X-Blackfire-Query' => [$subQuery ?? null]
+        ]);
+        $response = $client->send($request);
+        var_dump($response);
+
+        return '';
     }
 
     public function actionTrends(): string
