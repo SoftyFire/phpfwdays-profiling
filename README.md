@@ -10,3 +10,12 @@ During the workshop, we will find the bottlenecks using profiler and fix them.
 2. Run `composer install`
 3. Run `./yii migrate/up` and apply the migration
 4. Start a web server using `./yii serve`
+
+
+## Running blackfire-player
+
+See https://blackfire.io/docs/player/index#documentation for details:
+
+```
+blackfire-player run --blackfire-env "Test" -- tests/blackfire-player/smoke.bkf
+```

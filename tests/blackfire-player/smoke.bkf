@@ -13,4 +13,4 @@ scenario
 
     click link("Generate articles")
         expect status_code() == 200
-        assert main.wall_time < 500ms
+        assert main.wall_time < 800ms
